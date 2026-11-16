@@ -1,0 +1,10 @@
+# Render Blueprint: one web service runs both the game page (frontend) and the
+# room + voice server (backend). Render > New > Blueprint > pick this repo.
+services:
+  - type: web
+    name: aareware-coastal-drive
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
