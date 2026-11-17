@@ -10,7 +10,7 @@ const { WebSocketServer } = require('ws');
 
 const PORT = process.env.PORT || 3000;
 const MAX_PER_ROOM = 8;
-const TICK_MS = 66;          // ~15 car snapshots per second
+const TICK_MS = 25;          // relay tick: 40 batches per second (each carries only the states that changed)
 const STALE_MS = 15000;      // drop a socket that has been silent this long
 const ROOM_RE = /^[A-Z0-9]{4,8}$/;
 
@@ -50,7 +50,9 @@ function clean(s, name) {
   return {
     n: name,
     c: Math.round(num(s.c, 0, 9)), p: Math.round(num(s.p, 0, 15)),
-    x: num(s.x, -1500, 1500), y: num(s.y, -50, 300), z: num(s.z, -1500, 1500), h: num(s.h, -10, 10),
+    x: num(s.x, -1400, 1500), y: num(s.y, -50, 300), z: num(s.z, -3400, 3000), h: num(s.h, -10, 10),
+    vx: num(s.vx, -150, 150), vz: num(s.vz, -150, 150), w: num(s.w, -12, 12), tc: Math.round(num(s.tc, 0, 255)),
+    q: Math.round(num(s.q, 0, 2e9)), ct: num(s.ct, 0, 4e12),     // sequence number + the sender's own clock: lets clients interpolate smoothly
     v: num(s.v, -120, 120), st: num(s.st, -1, 1), rp: Math.round(num(s.rp, 0, 12000)), th: num(s.th, 0, 1),
     l: s.l ? 1 : 0, e: s.e ? 1 : 0, b: s.b ? 1 : 0,
     ts: Math.round(num(s.ts, 0, 20)), tt: num(s.tt, 0, 4e12),
@@ -69,6 +71,7 @@ function allow(pl, cost = 1) {
   pl.tokens -= cost; return true;
 }
 
+server.on('connection', (sock) => { try { sock.setNoDelay(true); } catch (e) { /* ignore */ } });   // no Nagle delay on small frames
 wss.on('connection', (ws) => {
   let room = null, id = null;
   ws.on('message', (raw) => {
@@ -102,7 +105,11 @@ wss.on('connection', (ws) => {
     if (!pl) return;
     pl.last = Date.now();
 
-    if (m.t === 's') { const s = clean(m.s, pl.name); if (s) pl.state = s; return; }
+    if (m.t === 's') {
+      const s = clean(m.s, pl.name);
+      if (s) { pl.state = s; pl.frag = JSON.stringify(id) + ':' + JSON.stringify(s); pl.dirty = true; }   // serialised once, reused for every recipient
+      return;
+    }
 
     // ---- voice: who has voice on, and WebRTC signalling relay (offer/answer/ICE)
     if (m.t === 'voice') {
@@ -159,18 +166,24 @@ wss.on('connection', (ws) => {
   ws.on('error', leave);
 });
 
-// snapshot loop: each player gets everyone's latest state
+// relay loop: every tick, each driver receives the states that changed since the last tick (never their own).
+// Clients rebuild smooth motion from the timestamps inside the states, so this only has to be prompt and even.
 setInterval(() => {
   const now = Date.now();
   for (const r of rooms.values()) {
-    const snap = {};
+    const fresh = [];
     for (const [pid, p] of r.players) {
       if (now - p.last > STALE_MS) { try { p.ws.terminate(); } catch (e) { /* ignore */ } continue; }
-      if (p.state) snap[pid] = p.state;
+      if (p.dirty && p.frag) fresh.push([pid, p]);
     }
-    if (Object.keys(snap).length < 1) continue;
-    const msg = JSON.stringify({ t: 'snap', s: snap });
-    for (const p of r.players.values()) if (p.ws.readyState === 1) p.ws.send(msg);
+    if (!fresh.length) continue;
+    for (const [rid, rp] of r.players) {
+      if (rp.ws.readyState !== 1 || rp.ws.bufferedAmount > 65536) continue;   // skip a client that cannot keep up
+      const parts = [];
+      for (const [pid, p] of fresh) if (pid !== rid) parts.push(p.frag);
+      if (parts.length) { try { rp.ws.send('{"t":"snap","s":{' + parts.join(',') + '}}'); } catch (e) { /* closed */ } }
+    }
+    for (const f of fresh) f[1].dirty = false;
   }
 }, TICK_MS);
 

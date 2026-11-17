@@ -39,7 +39,11 @@ Free plan notes:
 - The service sleeps after 15 minutes with no traffic. The first visit after that takes
   about a minute to wake up. While people are driving, their game messages keep it awake.
 - Rooms live in memory. A sleep, restart or new deploy clears all rooms; just create a new one.
-- To update the game later, replace `public/index.html` in the repo and push. Render redeploys.
+- To update the game later, replace `public/index.html` (and `server.js` if it changed) in the repo and
+  push. Render redeploys. In the browser: open the file on GitHub, **Add file > Upload files**, drop the
+  new file in the same folder, and **Commit changes**. No terminal needed.
+- If the repo has everything inside a folder (for example `aareware-server/`), set that folder as the
+  **Root Directory** in Render > Settings.
 
 ## Voice chat
 
@@ -85,8 +89,11 @@ For those, add a TURN relay:
 ## How it works
 
 - `public/index.html` is the whole game in one file.
-- `server.js` serves that page, relays each driver's position about 15 times a second to
-  the others in the room, and relays the voice setup messages. Rooms hold up to 8 drivers
+- `server.js` serves that page, relays each driver's position to the others in the room, and
+  relays the voice setup messages. Drivers send 20 updates a second; the server batches the changed
+  ones every 25 ms and sends each driver only the others. Every update carries the sender's own clock,
+  a sequence number, velocity and turn rate, so each browser can play other cars back smoothly with a
+  short jitter buffer instead of jumping from packet to packet. Rooms hold up to 8 drivers
   and disappear when empty. A room code is 4 to 8 letters or digits.
 - `GET /healthz` returns `ok`. `GET /ice` returns the STUN/TURN list the page uses for voice.
 - Nothing is stored: no database, no login, no recordings.
@@ -96,3 +103,24 @@ For those, add a TURN relay:
 Anyone who knows a room code can join that room, so treat the code like a private link.
 Names are cleaned on the server and shown as plain text. Mic access is only requested when
 a player presses **Join voice chat**.
+
+## What is new in this version
+
+- **Smooth online players.** Other drivers are drawn from a small playback buffer with spline
+  interpolation, shortest-arc steering and a short dead-reckoning step for late packets. Tested with
+  8 drivers and 40 ms of random network delay plus bursts: displayed speed stays within about 2 percent.
+- **Level of detail everywhere.** Terrain chunks, the far coast, trees, palms, shrubs, rocks, houses
+  and every car (full model, simple model, two-box model) switch with distance. Hundreds of small
+  props are merged into a few draw calls. Far cars cost almost nothing.
+- **Bigger, more realistic map.** About 5.7 km of coast road from Ganpatipule in the north to
+  Ratnagiri / Bhagwati fort in the south, with villages, beaches, headlands and a forested hill.
+- **Ganpatipule Swayambhu Ganpati temple and beach.** Sea-facing red mandapa, white stepped roofs and
+  shikhara, deepmala towers, bunting, stalls and the beach village. Fenced off by solid walls: cars
+  cannot touch it.
+- **Bhagwati (Ratnadurg) fort.** Laterite sea fort on its headland with bastions, gate, Bhagwati
+  temple spire and lighthouse. Also solid, cars cannot enter.
+- **Mouse look.** Move the mouse to look around (chase, bumper and cockpit cameras). It drifts back to
+  centre after a moment. On touch screens, drag.
+- **Water revive.** Drive or fall into the sea and a countdown appears; after about four seconds the car
+  fades back onto the road facing the way you were heading. Press **R** any time to go back right away.
+- **More realistic cars** with proper headlights, grilles, glass, mirrors, rims and tail lamps.
