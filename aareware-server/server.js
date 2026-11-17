@@ -45,19 +45,36 @@ const rooms = new Map();
 let nextId = 1;
 
 const num = (v, lo, hi, d = 0) => (typeof v === 'number' && isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d);
-function clean(s, name) {
+// A driver's state is split in two. `fix` rarely changes (name, car, paint, time of day, weather) and is sent to each recipient once
+// and again only when it changes; `dyn` is the motion and is sent every tick. A client may leave the fix fields out of a message,
+// the server then keeps the previous values. Zero-valued extras are left out of the wire format (clients read a missing one as 0).
+function clean(s, name, prev) {
   if (!s || typeof s !== 'object') return null;
-  return {
+  const has = (k) => s[k] !== undefined;
+  const fix = {
     n: name,
-    c: Math.round(num(s.c, 0, 9)), p: Math.round(num(s.p, 0, 15)),
-    x: num(s.x, -1400, 1500), y: num(s.y, -50, 300), z: num(s.z, -3400, 3000), h: num(s.h, -10, 10),
-    vx: num(s.vx, -150, 150), vz: num(s.vz, -150, 150), w: num(s.w, -12, 12), tc: Math.round(num(s.tc, 0, 255)),
-    q: Math.round(num(s.q, 0, 2e9)), ct: num(s.ct, 0, 4e12),     // sequence number + the sender's own clock: lets clients interpolate smoothly
-    v: num(s.v, -120, 120), st: num(s.st, -1, 1), rp: Math.round(num(s.rp, 0, 12000)), th: num(s.th, 0, 1),
-    l: s.l ? 1 : 0, e: s.e ? 1 : 0, b: s.b ? 1 : 0,
-    ts: Math.round(num(s.ts, 0, 20)), tt: num(s.tt, 0, 4e12),
+    c: has('c') ? Math.round(num(s.c, 0, 9)) : prev ? prev.c : 0,
+    p: has('p') ? Math.round(num(s.p, 0, 15)) : prev ? prev.p : 0,
+    ts: has('ts') ? Math.round(num(s.ts, 0, 20)) : prev ? prev.ts : 0,
+    tt: has('tt') ? num(s.tt, 0, 4e12) : prev ? prev.tt : 0,
+    wx: has('wx') ? (s.wx ? 1 : 0) : prev ? prev.wx : 0,                  // shared weather: 0 clear / 1 rain
+    wt: has('wt') ? num(s.wt, 0, 4e12) : prev ? prev.wt : 0,              // stamp of whoever pressed last
   };
+  const dyn = {
+    x: num(s.x, -1400, 1500), y: num(s.y, -50, 300), z: num(s.z, -3400, 4600), h: num(s.h, -10, 10),
+    vx: num(s.vx, -150, 150), vz: num(s.vz, -150, 150), w: num(s.w, -12, 12),
+    q: Math.round(num(s.q, 0, 2e9)), ct: num(s.ct, 0, 4e12),     // sequence number + the sender's own clock: lets clients interpolate smoothly
+    v: num(s.v, -120, 120), st: num(s.st, -1, 1), rp: Math.round(num(s.rp, 0, 14000)), e: s.e ? 1 : 0,
+  };
+  const tc = Math.round(num(s.tc, 0, 255)), th = num(s.th, 0, 1), wl = num(s.wl, -0.2, 1);
+  if (tc) dyn.tc = tc;
+  if (th) dyn.th = th;
+  if (wl) dyn.wl = wl;
+  if (s.l) dyn.l = 1;
+  if (s.b) dyn.b = 1;
+  return { fix, dyn };
 }
+const FIX_KEYS = ['n', 'c', 'p', 'ts', 'tt', 'wx', 'wt'];
 const cleanName = (n) => String(n || 'Driver').replace(/[^\p{L}\p{N} _.\-]/gu, '').trim().slice(0, 14) || 'Driver';
 const send = (ws, o) => { if (ws.readyState === 1) { try { ws.send(JSON.stringify(o)); } catch (e) { /* closed */ } } };
 const broadcast = (r, o, exceptId) => { const m = JSON.stringify(o); for (const [id, p] of r.players) if (id !== exceptId && p.ws.readyState === 1) { try { p.ws.send(m); } catch (e) { /* closed */ } } };
@@ -90,7 +107,7 @@ wss.on('connection', (ws) => {
       if (r.players.size >= MAX_PER_ROOM) { send(ws, { t: 'err', msg: 'That room is full (' + MAX_PER_ROOM + ' drivers).' }); return; }
       id = 'p' + (nextId++);
       room = code;
-      const pl = { ws, state: null, name: cleanName(m.name), last: Date.now(), muted: false, vseq: 0, tokens: 160, tAt: Date.now() };
+      const pl = { ws, fix: null, dyn: null, sv: 0, seen: new Map(), name: cleanName(m.name), last: Date.now(), muted: false, vseq: 0, tokens: 160, tAt: Date.now() };
       if (!r.host) r.host = id;                       // the room creator is the host
       pl.muted = r.muteNew && r.host !== id;
       const others = [];
@@ -106,8 +123,13 @@ wss.on('connection', (ws) => {
     pl.last = Date.now();
 
     if (m.t === 's') {
-      const s = clean(m.s, pl.name);
-      if (s) { pl.state = s; pl.frag = JSON.stringify(id) + ':' + JSON.stringify(s); pl.dirty = true; }   // serialised once, reused for every recipient
+      const c = clean(m.s, pl.name, pl.fix);
+      if (c) {
+        if (!pl.fix || FIX_KEYS.some((k) => c.fix[k] !== pl.fix[k])) pl.sv = (pl.sv | 0) + 1;     // version of the slow-changing part
+        pl.fix = c.fix; pl.dyn = c.dyn;
+        pl.frag = JSON.stringify(id) + ':' + JSON.stringify(c.dyn);                              // serialised once, reused for every recipient
+        pl.fragFull = null; pl.dirty = true;
+      }
       return;
     }
 
@@ -154,6 +176,7 @@ wss.on('connection', (ws) => {
     if (!r) return;
     r.players.delete(id);
     if (r.players.size === 0) { rooms.delete(code); return; }
+    for (const q of r.players.values()) q.seen.delete(id);
     broadcast(r, { t: 'left', id });
     if (r.host === id) {                              // host left: the longest-present driver takes over
       r.host = r.players.keys().next().value;
@@ -180,7 +203,14 @@ setInterval(() => {
     for (const [rid, rp] of r.players) {
       if (rp.ws.readyState !== 1 || rp.ws.bufferedAmount > 65536) continue;   // skip a client that cannot keep up
       const parts = [];
-      for (const [pid, p] of fresh) if (pid !== rid) parts.push(p.frag);
+      for (const [pid, p] of fresh) {
+        if (pid === rid) continue;
+        if (rp.seen.get(pid) === p.sv) parts.push(p.frag);                       // motion only
+        else {                                                                    // first time this recipient sees them, or car / paint / time / weather changed
+          rp.seen.set(pid, p.sv);
+          parts.push(p.fragFull || (p.fragFull = JSON.stringify(pid) + ':' + JSON.stringify(Object.assign({}, p.fix, p.dyn))));
+        }
+      }
       if (parts.length) { try { rp.ws.send('{"t":"snap","s":{' + parts.join(',') + '}}'); } catch (e) { /* closed */ } }
     }
     for (const f of fresh) f[1].dirty = false;

@@ -40,8 +40,10 @@ Free plan notes:
   about a minute to wake up. While people are driving, their game messages keep it awake.
 - Rooms live in memory. A sleep, restart or new deploy clears all rooms; just create a new one.
 - To update the game later, replace `public/index.html` (and `server.js` if it changed) in the repo and
-  push. Render redeploys. In the browser: open the file on GitHub, **Add file > Upload files**, drop the
-  new file in the same folder, and **Commit changes**. No terminal needed.
+  push. Render redeploys. In the browser: open the repo's main page, **Add file > Upload files**, drag the
+  whole unzipped folder in (the file paths must read like `/aareware-server/public/index.html`, matching the
+  existing folder), and **Commit changes** straight to `main`. No terminal needed. Render notices the commit
+  and redeploys by itself; the Events tab shows "Deploy live" after a few minutes.
 - If the repo has everything inside a folder (for example `aareware-server/`), set that folder as the
   **Root Directory** in Render > Settings.
 
@@ -91,7 +93,8 @@ For those, add a TURN relay:
 - `public/index.html` is the whole game in one file.
 - `server.js` serves that page, relays each driver's position to the others in the room, and
   relays the voice setup messages. Drivers send 20 updates a second; the server batches the changed
-  ones every 25 ms and sends each driver only the others. Every update carries the sender's own clock,
+  ones every 25 ms and sends each driver only the others (a driver's car, paint, name, time and weather are sent to
+  each recipient once and again only when they change). Every update carries the sender's own clock,
   a sequence number, velocity and turn rate, so each browser can play other cars back smoothly with a
   short jitter buffer instead of jumping from packet to packet. Rooms hold up to 8 drivers
   and disappear when empty. A room code is 4 to 8 letters or digits.
@@ -106,14 +109,48 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **Kolhapur Ghat.** The Kolhapur–Ratnagiri arm at Hatkhamba no longer dead-ends at a barrier: it continues as a
+  2 km mountain climb with 7 hairpins (steepest grade about 9 percent, 154 m at the top), guard rails, hairpin and
+  speed signs, cut slopes of red laterite, a rock face on one side and a drop with a viewpoint on the other.
+  A dry or wet drive up and down was tested for all six vehicles. Fog sits in the hollows near the top.
+- **Weather.** Press **Y** (or the button under the place name, or the Weather switch in the garage) to switch
+  between clear and rain. It rains with falling streaks, a grey sky and heavier fog, the road turns dark and
+  glossy with puddles, wipers sweep the windscreen in the cockpit view, tyres throw spray, and there is
+  rain and (in a downpour) thunder with lightning. Wet roads cost grip (more on paint and laterite, less on
+  paving), braking distances grow, and at speed on a wet tar road the car can aquaplane a little. Rolling
+  fog banks drift around the ghat. In a room the weather is shared: whoever pressed last decides, and a
+  driver who joins starts in the room's weather.
+- **Made for 8 players.** Remote cars and bikes are drawn from far fewer draw calls (a remote bike went from
+  107 to 39, a car from 46 to 32), only the nearest few get the full model and shadows, the rest drop one level
+  of detail, and cars that leave are properly freed from memory. If the frame rate sags, the game first thins the
+  rain and fog banks, then reduces the number of fully detailed remote vehicles, then distant plants, then the
+  render resolution. Network messages are about 30 percent smaller (the car, paint, time and weather fields are
+  sent once and only again when they change). Tested with 8 simulated drivers: about 19 KB/s down and 3 KB/s up
+  per driver, server CPU around 3 percent.
+
+- **Hapus Triple 765 RS** (a parody Street Triple 765 RS), the sixth vehicle in the garage. Naked bike with a
+  rider, real lean in corners, a quickshifter (clutchless upshifts with a burble) and wheelies on a hard launch.
+  Its engine is a 765 cc inline triple with a short, raspy slip-on exhaust and a loud intake howl, redline 12,650 rpm.
+  Other riders and drivers see it leaning and wheelie-ing in a room.
+- **Hatkhamba Thita junction.** The three-road junction south of Bhagwati fort, 1.2 km further down the
+  coast (the coast road is now about 6.9 km from end to end): a flared plaza with zebra crossings and lane arrows, raised medians with
+  shrubs and lamp posts, NH 66 / NH 166 shields and green direction boards, and the roadside buildings: Hotel
+  Alankar Deluxe (pink bands, neon arch, porte-cochere), the row of hotels, chaha stalls and Konkan canteen, Hotel
+  Van Vihar, Hotel Y Inn, a tin-roof warehouse with trucks, a tractor yard, an EV charging canopy, a bus stop and a
+  small roadside shrine. An HP petrol pump with a shop, ATM, toilets and e-charge posts works for refuelling.
+  All of it is solid for the cars.
+- **Engine sounds rebuilt.** Every vehicle now has its own synthesised engine: firing order, exhaust-pipe resonance,
+  intake roar, throttle-off engine braking and overrun pops on the sporty ones, instead of the earlier buzzy tone.
+  These are procedural approximations, not recordings of the real vehicles.
+
 - **Smooth online players.** Other drivers are drawn from a small playback buffer with spline
   interpolation, shortest-arc steering and a short dead-reckoning step for late packets. Tested with
   8 drivers and 40 ms of random network delay plus bursts: displayed speed stays within about 2 percent.
 - **Level of detail everywhere.** Terrain chunks, the far coast, trees, palms, shrubs, rocks, houses
   and every car (full model, simple model, two-box model) switch with distance. Hundreds of small
   props are merged into a few draw calls. Far cars cost almost nothing.
-- **Bigger, more realistic map.** About 5.7 km of coast road from Ganpatipule in the north to
-  Ratnagiri / Bhagwati fort in the south, with villages, beaches, headlands and a forested hill.
+- **Bigger, more realistic map.** Coast road from Ganpatipule in the north to
+  Ratnagiri / Bhagwati fort and on to Hatkhamba in the south, with villages, beaches, headlands and a forested hill.
 - **Ganpatipule Swayambhu Ganpati temple and beach.** Sea-facing red mandapa, white stepped roofs and
   shikhara, deepmala towers, bunting, stalls and the beach village. Fenced off by solid walls: cars
   cannot touch it.
