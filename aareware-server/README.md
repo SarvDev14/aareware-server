@@ -109,6 +109,22 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **Graphics: Normal and Ultra.** The garage (Esc) has a new **Graphics** switch, and **U** flips it while driving.
+  **Normal** is the look the game always had and the lightest on your device. **Ultra** is the realistic one:
+  the whole frame is lit in HDR with a filmic tone map, 4x anti-aliasing, ambient occlusion (soft contact shadows under
+  cars, trees and in every crease), bloom around headlights, tail lights and the sun, sun shafts, a little motion blur
+  at speed, sharper and softer shadows (a 4096 px shadow map), and a gentle colour grade. On top of that: leafy
+  trees and shrubs built from painted leaf cards that sway in the wind and glow where the sun shines through,
+  feathery palms with coconuts, carved rocks, asphalt with grain, patches and cracks, finer ground detail, metallic
+  flakes in the car paint, finer sea ripples with a sharper sun glitter, sun-lit cloud edges with thin high cirrus,
+  and a properly shaped rider on the Hapus (jacket with armour, helmet with livery and visor, gloves, boots).
+  Ultra watches its own frame rate: if your device cannot keep up it eases down in five steps (less anti-aliasing,
+  no ambient occlusion, simpler plants, lower render scale) and, as a last resort, switches itself back to Normal.
+  The mode you end on is remembered for next time. Ultra needs a browser that can render in HDR (most computers and
+  many phones; the garage tells you if yours cannot) and a reasonably capable graphics chip. On a laptop with two
+  graphics chips, make sure the browser runs on the stronger one. Voice chat and rooms work the same in both modes,
+  and other players see your car the same either way.
+
 - **Kolhapur Ghat.** The Kolhapur–Ratnagiri arm at Hatkhamba no longer dead-ends at a barrier: it continues as a
   2 km mountain climb with 7 hairpins (steepest grade about 9 percent, 154 m at the top), guard rails, hairpin and
   speed signs, cut slopes of red laterite, a rock face on one side and a drop with a viewpoint on the other.
