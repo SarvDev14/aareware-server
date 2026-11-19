@@ -64,6 +64,19 @@ Free plan notes:
   hear the game through your mic. With headphones it is off, which gives the clearest voice (the canceller can
   otherwise chop your voice while the engine sound plays). The page switches to headphones by itself when the
   browser reports a headset or earbuds, and remembers your choice.
+- **Choosing the microphone, Bluetooth headsets and Listen only.** Under *Voice chat* in the garage there is a
+  **Microphone** list: *Automatic (recommended)*, every microphone the browser can see, and *Listen only (no
+  microphone)*. A Bluetooth headset has two modes: stereo (music quality) and a "Hands-Free" phone mode that is mono
+  and narrow, like a phone call. Windows switches the headset into phone mode the moment any program opens its
+  microphone, and then everything the headset plays, the game included, sounds like a call. That happens in Windows and
+  in the headset; the game's own sound is made inside your browser and never goes to a server. So *Automatic* prefers
+  your laptop's, a USB or a wired microphone over a Bluetooth headset's, whenever one exists (the browser only shows
+  device names after you have allowed the microphone once; the very first time it may open the default microphone and
+  then move to a better one straight away). *Listen only* joins the voice chat without opening any microphone: the
+  headset stays in stereo and you still hear everyone. If the page sees that your sound output has switched into
+  phone mode, a note appears in the panel and the **Voice chat** tips explain what to do. Your choice is remembered.
+- **Windows "Communications" setting.** Control Panel > Sound > **Communications** tab > **Do nothing**. The default,
+  "Reduce the volume of other sounds by 80 percent", turns the game down whenever Windows thinks you are on a call.
 - A mic icon and a green ring appear on a driver's name tag while they talk.
 - It is a full mesh, which is fine for the 8-driver room limit.
 
@@ -118,6 +131,44 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **1.6.0: Epic graphics (a third Graphics mode, after Normal and Ultra).** Pick **Epic** in the garage (Esc), or press **U**
+  to cycle Normal, Ultra, Epic. It builds on everything Ultra does and aims at the look of the GTA 6 trailer screenshots you
+  sent: a low golden sun with long soft shadows (the shadow reach is 100 m), warm haze that thickens with distance and glows
+  towards the sun, a sun glare with a soft veil and a faint streak, longer light shafts, a filmic colour grade (cool shadows,
+  warm highlights, a touch of film grain and lens fringing), stronger ambient occlusion. The sky has clouds that shade
+  themselves (bright rims, dark undersides) and a warm band on the horizon. The sea mirrors the clouds, has a long swell,
+  whitecaps, light glowing through the waves and moving caustic lines in the shallows, and darker wet sand on the shore.
+  On land: ground with straw-coloured patches, pebbles and grit; asphalt with worn lane lines, polished wheel tracks,
+  repair patches with sealed edges, tar-filled cracks and sand blown over the edges; houses with mud splashes and algae at the
+  foot of the walls, rain streaks under the eaves, moss on the tiles and rust streaks on the tin; denser, lusher plants with
+  red-flowering trees along the roads and round the villages, bougainvillea at the walls, and grass tufts along the verges;
+  weathered wooden post-and-rail fences round the beach car parks, reflector posts along the coast road, two short road-works
+  shoulders with cones and barriers, and striped beach umbrellas with folding chairs.
+  **What this is and is not:** everything is made inside the game from code (no GTA 6 textures or models, which are not
+  mine to copy, and the game has no way to download images). The look is inspired by your screenshots, but the cars, bikes,
+  houses and trees are still this game's own simple models, so expect a big step up from Ultra, not photographic GTA 6.
+  Epic is the heaviest mode. It needs the same HDR support as Ultra and a stronger graphics chip (a laptop RTX 3050 should
+  manage; on a laptop make sure the browser uses the RTX, in Windows: Settings > System > Display > Graphics > your browser >
+  High performance). It watches its own frame rate: if it cannot keep up it eases down two steps inside Epic, then falls back to
+  Ultra, then Normal. Normal and Ultra look and run exactly as before. Voice chat, rooms and other players are unaffected.
+- **1.5.1: voice chat and the game sound (read this first).** Pressing *Join voice chat* made the whole game sound
+  like a phone call. The game's sound is generated inside your browser and mixed on your own computer, so it cannot
+  be going through a server. The cause that fits is the Bluetooth headset switching to its phone profile when its
+  microphone opens (see Voice chat above), plus Windows lowering other sounds during "calls". This version adds the
+  **Microphone** picker, makes *Automatic* avoid a Bluetooth headset's microphone when another one exists, adds
+  **Listen only**, and shows a note when the sound output looks like it is in phone mode. I could not hear a Bluetooth
+  headset where this was built: the logic was tested with a fake microphone and fake device names, two browsers
+  and this server. If it still sounds like a call, use *Listen only* once: if the sound is clean then, it is the
+  headset's microphone, and a laptop or USB microphone (or, in Windows, Control Panel > Devices and Printers > right-click the headset > Properties > Services >
+  untick "Handsfree Telephony", which gives up the headset's own microphone for good) is the fix.
+- **1.5.1: road signs point the right way.** Every board used to be one picture shown on both faces, so the arrow
+  was right from one direction and backwards from the other, and some signs stood past the junction they
+  announce. Now each board faces one direction of travel (the back is plain grey), stands on the left verge for that
+  direction (traffic keeps left), and its arrow and distance are worked out from where the side road really leaves:
+  left or right, far boards about 250 m ahead and near boards about 40 m ahead, plus "ahead" boards for Ganpatipule,
+  Bhagwati fort and Hatkhamba. The Station Road, Hatkhamba and temple/fort name boards, the hoardings and the painted
+  lane arrows were fixed the same way. Checked by a script that walks every board and by driver's-eye pictures.
+
 - **Clear voice and game sound together.** In the lobby the voice was clear because the game was silent; once driving began,
   the engines, the wind and the voices competed and the browser's echo canceller started chopping your voice. Voice chat
   already travels on its own direct browser-to-browser audio channel (no ports to choose), so the fix is in how the
@@ -143,7 +194,7 @@ a player presses **Join voice chat**.
   This is a procedural model made from your photos and notes: it matches the layout and look (colours, columns, signs), not
   every detail, and the emblem is a generic badge, not the real Konkan Railway logo.
 
-- **Graphics: Normal and Ultra.** The garage (Esc) has a new **Graphics** switch, and **U** flips it while driving.
+- **Graphics: Normal and Ultra (Epic was added in 1.6.0, above).** The garage (Esc) has a new **Graphics** switch, and **U** flips it while driving.
   **Normal** is the look the game always had and the lightest on your device. **Ultra** is the realistic one:
   the whole frame is lit in HDR with a filmic tone map, 4x anti-aliasing, ambient occlusion (soft contact shadows under
   cars, trees and in every crease), bloom around headlights, tail lights and the sun, sun shafts, a little motion blur
