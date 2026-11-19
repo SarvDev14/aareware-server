@@ -52,9 +52,18 @@ Free plan notes:
 - Press **Join voice chat** in the garage (Esc) while you are in a room. The browser asks for
   the microphone. Audio goes directly between browsers; the server only helps them find
   each other.
-- **K** turns your mic on or off. **B** switches the range between *Nearby* (voices fade out
-  with distance, about 30 m full volume to 260 m silent, like being on the road together)
-  and *Everyone*.
+- **K** turns your mic on or off. **B** switches the range between *Everyone* (the default: every
+  driver in the room is heard at full volume wherever they are) and *Nearby* (voices fade out
+  with distance, full volume inside about 120 m and silent beyond about 900 m, like being on the road together).
+- **Clear voice while driving.** Voice and the game share one audio engine but have their own volume
+  sliders in the garage (**Game** 0 to 150 percent, **Voice** 0 to 200 percent). The game volume dips by about half
+  while a friend talks (and a little while you talk), so voices stay clear over the engines. Voice has its own
+  limiter, so a loud friend does not distort.
+- **Headphones or speakers.** Under *Voice chat* there is a button **Mic: speakers (echo cancel)** /
+  **Mic: headphones (best quality)**. With speakers, the browser's echo canceller is on so friends do not
+  hear the game through your mic. With headphones it is off, which gives the clearest voice (the canceller can
+  otherwise chop your voice while the engine sound plays). The page switches to headphones by itself when the
+  browser reports a headset or earbuds, and remembers your choice.
 - A mic icon and a green ring appear on a driver's name tag while they talk.
 - It is a full mesh, which is fine for the 8-driver room limit.
 
@@ -108,6 +117,31 @@ Names are cleaned on the server and shown as plain text. Mic access is only requ
 a player presses **Join voice chat**.
 
 ## What is new in this version
+
+- **Clear voice and game sound together.** In the lobby the voice was clear because the game was silent; once driving began,
+  the engines, the wind and the voices competed and the browser's echo canceller started chopping your voice. Voice chat
+  already travels on its own direct browser-to-browser audio channel (no ports to choose), so the fix is in how the
+  two are mixed: one shared audio engine, the game on its own bus with a limiter, voices on another bus with a boosted
+  limiter, the game ducking while friends talk, separate **Game** and **Voice** volume sliders, the default range changed
+  from *Nearby* to *Everyone*, and the speakers / headphones microphone mode described under Voice chat.
+  These are tuned by reasoning and measurements of the audio graph, not by ear on your devices: if a level still feels
+  off, move the Game or Voice slider in the garage.
+- **Ratnagiri railway station, Station Road and the thita.** About halfway along the coast road, on the hill side
+  (opposite the sea), a new three-way junction (**Station Road Thita**) with a flared mouth, zebra crossings, a stop line and lamp
+  posts splits off a straight, divided road that runs about 1.1 km inland to the station: two lanes each way
+  (traffic keeps left), a raised median with a chain-link fence, shrubs and double-arm lamps, median gaps with zebra crossings,
+  lane arrows and "Station Rd" painted on the tarmac, power poles with sagging wires, flowering trees along the footpaths,
+  a row of shops on one side (signboards, awnings, shutters, parked scooters and autos), a five-floor building site with scaffolding
+  and green netting, hoardings and billboards, bus shelters, kiosks, and blue "Railway Station" direction boards on the coast road.
+  At the end is the **station**: a long, low cream building with a flat canopy on flared maroon columns, a dark fascia with a
+  Devanagari station-name board (it is a picture, so it shows on any device), a "KONKAN RAILWAY RATNAGIRI" board and a round
+  emblem, glass bays between brick piers, three entrances, a red-carpet porch, a raised glass-band block above, a paved
+  forecourt with a planter of palms and flower trees, lamp posts, benches, buses, autos and hatchbacks; behind it two island
+  platforms with canopies and signs, three tracks with ballast and overhead wires, and a blue coach train. Everything solid is solid for
+  the cars (the porch stops you; you can drive round the ends). A few cars and autos drive on Station Road in both directions.
+  The map's minimap shows the station and the junction. At night the road and the forecourt are lit by soft pools of lamp light.
+  This is a procedural model made from your photos and notes: it matches the layout and look (colours, columns, signs), not
+  every detail, and the emblem is a generic badge, not the real Konkan Railway logo.
 
 - **Graphics: Normal and Ultra.** The garage (Esc) has a new **Graphics** switch, and **U** flips it while driving.
   **Normal** is the look the game always had and the lightest on your device. **Ultra** is the realistic one:
