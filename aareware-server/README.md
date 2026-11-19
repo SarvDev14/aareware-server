@@ -47,6 +47,35 @@ Free plan notes:
 - If the repo has everything inside a folder (for example `aareware-server/`), set that folder as the
   **Root Directory** in Render > Settings.
 
+## Playing on a phone or tablet
+
+Open the same address in **Chrome on Android** or **Safari on iPhone / iPad**. The garage and the controls change to fit
+a touch screen by themselves. Landscape (phone turned sideways) is the best way to play; in portrait the game works too and
+shows a small "turn your phone sideways" note you can close.
+
+- **Left thumb: steering.** Two arrows; slide your thumb from one to the other without lifting it. In the garage (menu
+  button, top right) the *Touch controls* section also offers a **Slider** (a knob you drag, with finer steering) and **Tilt**
+  (turn the phone like a steering wheel; tap the on-screen wheel to centre it, and use *Reverse tilt* if it turns the wrong way).
+- **Right thumb: gas and brake.** The brake also reverses. **HAND** is the handbrake and **HORN** is the horn.
+- **Top row:** camera, **back to the road** (hold it for half a second, so a stray tap cannot throw you across the map),
+  **More** and the garage menu. **More** holds lights, time of day, weather, gearbox, graphics, sound, engine on/off, the
+  drivers list, HUD on/off, car colour, spare fuel and voice range. The microphone button shows up while you are in voice chat.
+- **Drag anywhere else on the view** to look around. When you stop near a pump, a **Hold to refuel** button appears.
+- With the **Manual** gearbox, **UP / DOWN** shift buttons appear above the steering arrows.
+- **Full screen.** Android Chrome goes full screen and locks to landscape when you press *Start driving* (you can turn that off in
+  the Touch controls section). iPhone Safari cannot do that from a web page: tap **Share > Add to Home Screen** and open the
+  game from its icon, which then runs full screen. On Android the same works from Chrome's menu (**Install app** or **Add to Home
+  screen**). The server provides the icon and install file for this.
+- **Performance.** Phones start with a lighter setup: a lower render resolution, smaller shadows, shorter draw distance for
+  scenery, no fog banks, lighter rain, fewer other cars on the road, and the frame rate held at 60 on 90 / 120 Hz screens. The game
+  also lowers its resolution by itself if the frame rate drops. **Normal** graphics is the one to use on a phone. Ultra and Epic
+  can still be chosen but will be slow on most phones. The page is about 11 MB, so the first load on mobile data takes a moment
+  (the server sends it compressed, and the browser keeps it afterwards).
+- **Sleep and signal.** The screen is kept awake while you drive. If the phone sleeps or the signal drops, the room connection
+  is rebuilt when you come back.
+- **Forcing a layout.** Add `?mobile=1` or `?mobile=0` (and `?touch=1` or `?touch=0`) to the address to force the phone or the
+  desktop layout, for example on a tablet with a keyboard.
+
 ## Voice chat
 
 - Press **Join voice chat** in the garage (Esc) while you are in a room. The browser asks for
@@ -131,6 +160,61 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **1.8.0: Android and iPhone.** The game now plays in a phone browser, with on-screen controls and a garage built for a touch
+  screen. See *Playing on a phone or tablet* above for how it is used.
+  **Controls.** Steering arrows (or a slider, or tilt), gas and brake pedals, handbrake, horn, camera, a hold-to-confirm "back to the
+  road" button, a More tray for everything that had a key on the keyboard, shift buttons for the manual gearbox, a refuel button, and
+  look-around by dragging the view. All the buttons work at the same time, so you can steer, hold the gas and pull the handbrake together.
+  **Layout.** The garage has a pinned *Start driving* button, bigger touch targets, and its own arrangement for landscape and portrait,
+  with the car shown beside the menu (landscape) or above it (portrait); it respects the notch and the home-bar area. On the road the speedometer is now a
+  short card in the top right, above the Hand and Horn buttons, with speed, gear, an RPM bar and the fuel bar (the round dial stays on
+  desktop). The room chip moves next to the top buttons and lists only the person who is talking.
+  **Phone profile.** Lighter defaults on phones (see above), a frame limit on high-refresh screens, and an automatic step-down of the
+  render resolution before anything else is cut. The room connection is rebuilt when the phone wakes up or the network returns.
+  **Home screen.** The server now serves an install file and icons, so "Add to Home Screen" gives a full-screen app with its own icon.
+  **A fix that also helps on desktop:** the faded-out garage menu used to keep catching clicks and taps where its buttons were; on a
+  phone that sat right on top of the steering arrows. It no longer reacts to anything once it is hidden.
+  **What I could not check.** I tested on emulated phones (a Pixel 7 and an iPhone 14, in both orientations) in a desktop Chrome
+  that draws in software, with scripted multi-finger input and fake tilt-sensor readings for all four screen rotations. That checks
+  the layout, the multi-touch handling and the tilt maths. It does not tell you the frame rate on a real phone, and I had no Safari
+  to test with, so the iPhone-only behaviours (sound waking up after a touch, the tilt permission pop-up, Add to Home Screen full
+  screen) are written to the documented behaviour but have not been seen working. Tilt direction was checked against the sensor
+  convention, not a real sensor: if it turns the wrong way on your phone, switch on *Reverse tilt*. The shared Claude page runs the
+  game inside a frame, where the browser may refuse full screen; the server version is the one to use on a phone.
+- **1.7.0: your models and textures are in the game, in Normal, Ultra and Epic alike.** Credits and licences are in
+  `CREDITS.md` and in the garage (Esc, bottom of the menu, *Credits and licences*).
+  **Cars.** The garage now has ten vehicles. Four are built on the models you sent: **Kolhapuri Six** (Mazda 6 sedan, 2.5 L,
+  front-wheel drive), **Sahyadri Hauler** (Ford F-150 pickup, 3.5 L twin-turbo V6, four-wheel drive), **Alibag Pony**
+  (1965 Mustang convertible, V8, rear-wheel drive, 4-speed) and **Hapus F1 V12** (McLaren F1, 6.1 L V12, rear-wheel drive,
+  driver in the centre seat). Each one drives like the real car as far as a browser game can: its own mass, power and
+  torque curve, gear ratios, brakes, tyre grip, centre of gravity and body roll, and its own engine sound (still made inside
+  the game). The pickup is heavy and does not mind bumps, the Mustang is loose, the McLaren is extremely fast and
+  twitchy, so be gentle with the throttle, especially in the wet. The models were optimised (compact files, WebP
+  textures), the body takes the colour you pick, the wheels roll and steer, and the head and tail lights come on. In the
+  cabin, the model's own steering wheel is part of the dashboard and does not turn (only the Mazda gets a simple wheel that
+  does). The four models have the steering wheel on the left, because that is how they were made; the game drives on the left.
+  **Houses.** Five of your wooden and tin-roof houses now stand along the coast road next to the old procedural ones. After
+  your feedback they are 1.3 to 1.6 times bigger than at first. Each house is recoloured per building, its windows glow
+  at night, and it has three levels of detail so far-away ones cost very little.
+  **Brick tower block.** The building you sent is a ten-storey brick block with a fire escape. Four of them stand along
+  Station Road with shops (awnings and signs) on the ground floor and tanks, solar panels and a lift room on the roof.
+  Each building has its own cream, terracotta or pale-green paint, and each window is lit or dark on its own in the evening
+  (a few with a cooler tube light), different in every building.
+  **Roads.** The asphalt grain of your road photos is on every road in all three modes (Ultra and Epic also use it for
+  bump and for how the surface shines when wet). The coast road and the ghat now have a **double yellow centre line**
+  where overtaking is unwise: tight bends, through the bigger villages, near the beach car parks and the Hatkhamba
+  junction, and the whole ghat. Elsewhere you still see the white dashes. There are **seven zebra crossings with stop lines**
+  across the coast road at the bigger villages (each moved to a straight stretch clear of junctions). They and the crossings on
+  Station Road are painted with the worn white bars of your crosswalk picture. All of it gets the same wet look, night
+  look and Epic wear as the other markings.
+  **Other changes.** The server now sends the page compressed (it is about 11 MB with the models) and lets a returning
+  browser skip the download when nothing changed. Tower windows no longer flicker at dusk.
+  **What I could not check.** Everything was tested in a browser rendered by software on a server, without a graphics chip,
+  so the frame rate on a laptop RTX 3050 is not measured. Epic still watches its own frame rate and eases down. In Windows
+  make sure the browser uses the RTX (Settings > System > Display > Graphics > your browser > High performance).
+  **Licences to look at before you share the game publicly** (details in `CREDITS.md`): the McLaren is CC BY-NC (non-commercial
+  only), the F-150 has Sketchfab's "Standard" licence (fine for playing with friends, not for passing the model on), and the
+  crosswalk picture's source was not recorded. Remove those models if that matters to you.
 - **1.6.0: Epic graphics (a third Graphics mode, after Normal and Ultra).** Pick **Epic** in the garage (Esc), or press **U**
   to cycle Normal, Ultra, Epic. It builds on everything Ultra does and aims at the look of the GTA 6 trailer screenshots you
   sent: a low golden sun with long soft shadows (the shadow reach is 100 m), warm haze that thickens with distance and glows

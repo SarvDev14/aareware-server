@@ -6,6 +6,8 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
+const crypto = require('crypto');
 const { WebSocketServer } = require('ws');
 
 const PORT = process.env.PORT || 3000;
@@ -24,18 +26,47 @@ if (process.env.ICE_SERVERS) {
 
 const pagePath = path.join(__dirname, 'public', 'index.html');
 let page = '';
-try { page = fs.readFileSync(pagePath, 'utf8').replace('<!--AW_SERVER-->', '<script>window.AW_WS=1</script>'); }
+// Home-screen install files (a phone can "Add to Home Screen" and open the game full screen, like an app). Only these names are ever served from public/.
+const STATIC = {
+  '/manifest.webmanifest': 'application/manifest+json',
+  '/icon-192.png': 'image/png',
+  '/icon-512.png': 'image/png',
+  '/icon-maskable-512.png': 'image/png',
+  '/apple-touch-icon.png': 'image/png',
+};
+const HEAD_TAGS = '<script>window.AW_WS=1</script>'
+  + '<link rel="manifest" href="/manifest.webmanifest">'
+  + '<link rel="icon" type="image/png" href="/icon-192.png">'
+  + '<link rel="apple-touch-icon" href="/apple-touch-icon.png">';
+try { page = fs.readFileSync(pagePath, 'utf8').replace('<!--AW_SERVER-->', HEAD_TAGS); }
 catch (e) { console.error('Missing public/index.html'); process.exit(1); }
+
+// The page is a single 10+ MB file (it carries the 3D models). It is compressed once in the background after start-up and sent with gzip when the browser
+// accepts it (about a third of the size), and an ETag lets a returning visitor get "304 not modified" instead of downloading it again.
+const pageTag = '"' + crypto.createHash('sha1').update(page).digest('hex').slice(0, 24) + '"';
+let pageGz = null;
+setTimeout(() => zlib.gzip(page, { level: 6 }, (err, buf) => { if (!err) pageGz = buf; }), 200);
 
 const server = http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
   if (url === '/healthz') { res.writeHead(200, { 'content-type': 'text/plain' }); res.end('ok'); return; }
   if (url === '/ice') { res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ iceServers: ICE })); return; }
   if (url === '/' || url === '/index.html') {
-    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache' });
+    const h = { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-cache', etag: pageTag, vary: 'Accept-Encoding' };
+    if ((req.headers['if-none-match'] || '').includes(pageTag)) { res.writeHead(304, h); res.end(); return; }
+    if (pageGz && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) { h['content-encoding'] = 'gzip'; res.writeHead(200, h); res.end(pageGz); return; }
+    res.writeHead(200, h);
     res.end(page); return;
   }
   if (url === '/favicon.ico') { res.writeHead(204); res.end(); return; }
+  if (Object.prototype.hasOwnProperty.call(STATIC, url)) {
+    fs.readFile(path.join(__dirname, 'public', url.slice(1)), (err, buf) => {
+      if (err) { res.writeHead(404, { 'content-type': 'text/plain' }); res.end('Not found'); return; }
+      res.writeHead(200, { 'content-type': STATIC[url], 'cache-control': 'public, max-age=86400', 'content-length': buf.length });
+      res.end(buf);
+    });
+    return;
+  }
   res.writeHead(404, { 'content-type': 'text/plain' }); res.end('Not found');
 });
 
