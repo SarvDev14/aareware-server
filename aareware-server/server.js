@@ -47,8 +47,24 @@ const pageTag = '"' + crypto.createHash('sha1').update(page).digest('hex').slice
 let pageGz = null;
 setTimeout(() => zlib.gzip(page, { level: 6 }, (err, buf) => { if (!err) pageGz = buf; }), 200);
 
+// The HQ ground pack (hq-ground.js: 2K ground / road textures and the HDRI skies, ~13 MB). Optional: without it the game keeps its plainer ground and sky.
+// The page asks for it once the game is running. Same treatment as the page: gzip in the background, ETag so a returning visitor gets "304 not modified".
+let hqPack = null, hqGz = null, hqTag = '';
+try {
+  hqPack = fs.readFileSync(path.join(__dirname, 'public', 'hq-ground.js'));
+  hqTag = '"' + crypto.createHash('sha1').update(hqPack).digest('hex').slice(0, 24) + '"';
+  setTimeout(() => zlib.gzip(hqPack, { level: 6 }, (err, buf) => { if (!err) hqGz = buf; }), 400);
+} catch (e) { hqPack = null; }
+
 const server = http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
+  if (url === '/hq-ground.js') {
+    if (!hqPack) { res.writeHead(404, { 'content-type': 'text/plain' }); res.end('Not found'); return; }
+    const h = { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'no-cache', etag: hqTag, vary: 'Accept-Encoding' };
+    if ((req.headers['if-none-match'] || '').includes(hqTag)) { res.writeHead(304, h); res.end(); return; }
+    if (hqGz && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) { h['content-encoding'] = 'gzip'; res.writeHead(200, h); res.end(hqGz); return; }
+    res.writeHead(200, h); res.end(hqPack); return;
+  }
   if (url === '/healthz') { res.writeHead(200, { 'content-type': 'text/plain' }); res.end('ok'); return; }
   if (url === '/ice') { res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ iceServers: ICE })); return; }
   if (url === '/' || url === '/index.html') {
@@ -84,7 +100,7 @@ function clean(s, name, prev) {
   const has = (k) => s[k] !== undefined;
   const fix = {
     n: name,
-    c: has('c') ? Math.round(num(s.c, 0, 9)) : prev ? prev.c : 0,
+    c: has('c') ? Math.round(num(s.c, 0, 15)) : prev ? prev.c : 0,
     p: has('p') ? Math.round(num(s.p, 0, 15)) : prev ? prev.p : 0,
     ts: has('ts') ? Math.round(num(s.ts, 0, 20)) : prev ? prev.ts : 0,
     tt: has('tt') ? num(s.tt, 0, 4e12) : prev ? prev.tt : 0,
