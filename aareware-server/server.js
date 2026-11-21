@@ -47,23 +47,27 @@ const pageTag = '"' + crypto.createHash('sha1').update(page).digest('hex').slice
 let pageGz = null;
 setTimeout(() => zlib.gzip(page, { level: 6 }, (err, buf) => { if (!err) pageGz = buf; }), 200);
 
-// The HQ ground pack (hq-ground.js: 2K ground / road textures and the HDRI skies, ~13 MB). Optional: without it the game keeps its plainer ground and sky.
-// The page asks for it once the game is running. Same treatment as the page: gzip in the background, ETag so a returning visitor gets "304 not modified".
-let hqPack = null, hqGz = null, hqTag = '';
-try {
-  hqPack = fs.readFileSync(path.join(__dirname, 'public', 'hq-ground.js'));
-  hqTag = '"' + crypto.createHash('sha1').update(hqPack).digest('hex').slice(0, 24) + '"';
-  setTimeout(() => zlib.gzip(hqPack, { level: 6 }, (err, buf) => { if (!err) hqGz = buf; }), 400);
-} catch (e) { hqPack = null; }
+// The HQ packs: hq-ground.js (2K ground / road textures and the HDRI skies, ~13 MB) and hq-veg.js (the plants and rocks: geometry + texture atlases, ~7 MB).
+// Both are optional: without them the game keeps its plainer ground and sky, and has no ground cover or bushes / boulders. The page asks for them once the game is running.
+// Same treatment as the page: gzip in the background, ETag so a returning visitor gets "304 not modified".
+const packs = {};
+for (const name of ['hq-ground.js', 'hq-veg.js']) {
+  try {
+    const buf = fs.readFileSync(path.join(__dirname, 'public', name));
+    const p = (packs['/' + name] = { buf, gz: null, tag: '"' + crypto.createHash('sha1').update(buf).digest('hex').slice(0, 24) + '"' });
+    setTimeout(() => zlib.gzip(buf, { level: 6 }, (err, g) => { if (!err) p.gz = g; }), 400);
+  } catch (e) { /* not there: the route answers 404 */ }
+}
 
 const server = http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
-  if (url === '/hq-ground.js') {
-    if (!hqPack) { res.writeHead(404, { 'content-type': 'text/plain' }); res.end('Not found'); return; }
-    const h = { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'no-cache', etag: hqTag, vary: 'Accept-Encoding' };
-    if ((req.headers['if-none-match'] || '').includes(hqTag)) { res.writeHead(304, h); res.end(); return; }
-    if (hqGz && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) { h['content-encoding'] = 'gzip'; res.writeHead(200, h); res.end(hqGz); return; }
-    res.writeHead(200, h); res.end(hqPack); return;
+  if (url === '/hq-ground.js' || url === '/hq-veg.js') {
+    const p = packs[url];
+    if (!p) { res.writeHead(404, { 'content-type': 'text/plain' }); res.end('Not found'); return; }
+    const h = { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'no-cache', etag: p.tag, vary: 'Accept-Encoding' };
+    if ((req.headers['if-none-match'] || '').includes(p.tag)) { res.writeHead(304, h); res.end(); return; }
+    if (p.gz && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) { h['content-encoding'] = 'gzip'; res.writeHead(200, h); res.end(p.gz); return; }
+    res.writeHead(200, h); res.end(p.buf); return;
   }
   if (url === '/healthz') { res.writeHead(200, { 'content-type': 'text/plain' }); res.end('ok'); return; }
   if (url === '/ice') { res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify({ iceServers: ICE })); return; }

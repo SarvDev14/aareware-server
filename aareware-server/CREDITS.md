@@ -27,22 +27,21 @@ changed for the game (optimised, re-textured, recoloured), which the licences as
 | Passenger coaches | Train Wagon | 3ddominator | CC BY 4.0 |
 | Tank wagons | Train Liquid Tanker Wagon Queensland Railway WSE | JoTrain The Aussie | Sketchfab "Standard" licence (see below) |
 | Railway track (station yard and the long lines) | IR track | FZ Studio | CC BY 4.0 |
-| Coconut palms ("palm A") | Coconut Tree Low poly | Pixel_Monster | CC BY 4.0 |
-| Realistic coconut palms ("palm R") | Palm Tree Realistic | 00amza | CC BY 4.0 |
+| Coconut palms | Palm Tree Realistic | 00amza | CC BY 4.0 |
 | Banana plants | Banana tree | Alnazir | CC BY 4.0 |
 | Pines / casuarina (beach backshore, high ground) | Pine Tree | BazukaliKartal | CC BY 4.0 |
+| Ground cover and rocks (`hq-veg.js`): grass, weeds, ferns, nettle, periwinkle, celandine, dandelion, shrubs 01-04, sorrel, moss, boulders, rock faces, stones and coastal rocks | grass_medium_02, weed_plant_02, fern_02, nettle_plant, periwinkle_plant, celandine_01, dandelion_01, shrub_01 to 04, shrub_sorrel_01, moss_01, boulder_01, rock_face_01 and 02, rock_07, rock_09, stone_01, namaqualand_stones_01, coast_rocks_01 and 03 (2K, simplified and repacked) | Poly Haven (polyhaven.com) | CC0 |
 | Ground, laterite, sand, asphalt and worn-asphalt PBR sets (`hq-ground.js`) | grass_path_2, red_laterite_soil_stones, coast_sand_01, asphalt_01, worn_asphalt (2K) | Poly Haven (polyhaven.com) | CC0 |
 | HDRI skies (`hq-ground.js`) | sunset_meadow_path, pizzo_pernice_puresky (4K) | Poly Haven (polyhaven.com) | CC0 |
 | Hill and grove trees | Tree low poly lowpoly | 00amza | CC BY 4.0 |
 | Large shade trees ("banyan") | Tree GN | TechArtBGN | CC BY 4.0 |
-| Leaning coconut palms ("palm B") | Bended coconut tree | 1-3D.com | CC BY-SA 4.0 (see below) |
 | Brick tower block on Station Road | building_02 | Shalmon | CC BY 4.0 |
 | Asphalt grain, double yellow line, zebra crossing | Photographs supplied by the project owner (two asphalt pictures and one crosswalk picture) | not recorded | not recorded |
 | Home-screen icon (`icon-*.png`, `apple-touch-icon.png`) | Sunset coast road with a palm, drawn for this game (generated from code) | made for this project | yours to use |
 
-CC BY 4.0: https://creativecommons.org/licenses/by/4.0/ — CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/ — CC BY-NC 4.0: https://creativecommons.org/licenses/by-nc/4.0/
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/ — CC BY-NC 4.0: https://creativecommons.org/licenses/by-nc/4.0/
 
-Source pages (all on sketchfab.com/3d-models/): 2013-triumph-street-triple-675-fb5cf269c2da4049ba3b61e35a2ed723, honda-cb-750-f-super-sport-1970-f121301624174b179ca4d50158797b03, rider-7c5da195bf6a4323a37390b299efba0c, indian-bus-1-a76faa90aa424a44aa28449c11133ea2, realtime-grass-07d38555cae844f7abdeace9d19c4777, soft-dirt-material-92c9c40d613c4c608684109ae471a9fe, industrial-train-dr14-54b78d37edc248a380c5112935465dbb, train-wagon-42875c098c33456b84bcfcdc4c7f1c58, train-liquid-tanker-wagon-queensland-railway-wse-d3bc48ccb3934e3cb91770b6c5c80a9f, ir-track-295062fb0f884f2490530591961029d5, coconut-tree-low-poly-8c5d6b661b2f4c37834d87cd187eb907, tree-low-poly-lowpoly-73201f05280d48dcb10ed4ca362d69f8, tree-gn-40da979cb23f492583ec89c4196cff4e, bended-coconut-tree-e9f4782e76724cdbb8b2aef8b81c32e3, house-32ee0a93e09449678414376d485d5a4d, farm-house-e5356036c0054bb6a958889e1dfb17b2, free-small-old-house-c86ac5cb889e4b62af6ddea43d773882, low-poly-houses-free-afc6e8745a4542cba687104cf90d309d, rentable-stores-b62e317e129e456f884ce6be4904aab3.
+Source pages (all on sketchfab.com/3d-models/): 2013-triumph-street-triple-675-fb5cf269c2da4049ba3b61e35a2ed723, honda-cb-750-f-super-sport-1970-f121301624174b179ca4d50158797b03, rider-7c5da195bf6a4323a37390b299efba0c, indian-bus-1-a76faa90aa424a44aa28449c11133ea2, realtime-grass-07d38555cae844f7abdeace9d19c4777, soft-dirt-material-92c9c40d613c4c608684109ae471a9fe, industrial-train-dr14-54b78d37edc248a380c5112935465dbb, train-wagon-42875c098c33456b84bcfcdc4c7f1c58, train-liquid-tanker-wagon-queensland-railway-wse-d3bc48ccb3934e3cb91770b6c5c80a9f, ir-track-295062fb0f884f2490530591961029d5, tree-low-poly-lowpoly-73201f05280d48dcb10ed4ca362d69f8, tree-gn-40da979cb23f492583ec89c4196cff4e, house-32ee0a93e09449678414376d485d5a4d, farm-house-e5356036c0054bb6a958889e1dfb17b2, free-small-old-house-c86ac5cb889e4b62af6ddea43d773882, low-poly-houses-free-afc6e8745a4542cba687104cf90d309d, rentable-stores-b62e317e129e456f884ce6be4904aab3.
 
 ## Things to settle before sharing the game publicly
 
@@ -55,10 +54,6 @@ Source pages (all on sketchfab.com/3d-models/): 2013-triumph-street-triple-675-f
 - **Tank wagon (Sketchfab "Standard" licence)** has the same limits as the F-150: you may use the model inside your own
   project, but not hand the model file on to others, and the game page contains it. Fine for friends; for a public release
   replace it or ask the author.
-- **Leaning coconut palm (CC BY-SA 4.0, "ShareAlike").** The modified tree model (`assets/palmb.glb`) has to stay under that
-  same licence, with credit to 1-3D.com and a note that it was changed. Whether that spreads to a whole game that contains the
-  model is not settled, so for a public release the safe choice is to drop this one palm: in `putPalm` in `src/scatter.js`
-  change `rnd() < 0.32` to `rnd() < 0` and every palm becomes the other (CC BY) palm model, with the layout unchanged.
 - **Crosswalk picture.** Its file name looks like a stock-vector download (it came as an .eps). If it came from a
   stock site, that site's licence usually asks for a credit line to the author; add it in the last row above.
 - Brand names (Mazda, Ford, McLaren) appear only as the names of the real cars the models depict; the garage uses its

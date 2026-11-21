@@ -160,6 +160,28 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **1.12.0: every plant and rock is a real scan now, and the ground is covered in them** (Epic gets the full set; Ultra a lighter one; phones a thinner one).
+  **New file: `public/hq-veg.js` (about 7 MB).** It carries the plants and rocks (geometry and texture atlases). It sits next to `public/index.html` and
+  `public/hq-ground.js`; the game fetches it after it starts. **Upload the whole `public` folder to GitHub, including `hq-veg.js`** (every file is under GitHub's
+  25 MB browser-upload limit). Without it the game still runs, with no ground cover, bushes or boulders.
+  **Removed.** All the plants, rocks and coconut palms I had made from code are gone: the grass tufts, shrubs, flower bushes, the old box-and-leaf palms and the
+  two palm models from 1.10.0 (so the CC BY-SA leaning palm is no longer in the game). Every coconut palm is the realistic one now. The towns' trees (Hatkhamba,
+  the station, Station Road) use the downloaded palms and trees too.
+  **Ground cover (Epic, Ultra, phones).** Grass, weeds, ferns, nettle, periwinkle, celandine, dandelions, small shrubs, sorrel, moss and pebbles from Poly Haven, as
+  real 3D plants (not flat cards), grouped into clumps and spread over every patch of grass and laterite around you, thicker beside the road, wetter patches
+  get ferns and moss, dry headland patches turn straw-coloured. Nothing is stored for the whole map: the clumps are generated around the camera as you drive
+  (64 m cells, always the same for the same place) and drawn with three detail levels, so memory and draw calls stay small. Plants sway in the wind, let sun
+  through their leaves and sink into the ground at the far edge instead of popping out.
+  **Bushes, boulders and rocks (all modes).** Cashew scrub and hedges are Poly Haven shrubs with a skirt of small plants round them. Boulders sit along the verges and on the
+  rocky shores, rock faces are set into steep banks beside the road, reef slabs lie off the rocky beaches, and the sea stacks and Bhagwati fort cliffs are tall
+  boulders. All of them are tinted red-brown like the laterite coast.
+  **Optimisation.** Instancing everywhere; one draw call per plant type and detail level for the ground cover (about 15 in all); plants and rocks share two texture
+  atlases (decoded at 2048 on Epic, 1024 on Ultra, 512 on Normal; phones the same as the mode). Epic draws about 3 million ground-cover triangles in view on a PC
+  (a third to half of that on a phone); the ranges are in `src/vegfield.js` (`QS`) if the frame rate is too low: lower `dens` or the `R` radii.
+  **What is not there.** No new broadleaf tree model was supplied, so the hill and grove trees are the same three as before (treea, treeb, banyan), and the flowering trees
+  along Station Road now use them too. Epic needs the graphics card set to the RTX 3050 (not the integrated one).
+  **Colour.** Coconut palms, trees, bushes and the grass are tinted a deeper green (the palm texture is yellow-green, which read as parrot green); only the dry patches stay straw.
+  Credits: Poly Haven plants and rocks are CC0 (listed in `CREDITS.md` and in the menu).
 - **1.11.0: real scanned ground, road and sky, new realistic trees, and trees everywhere** (Ultra and Epic get the full set; Normal gets the lighter version).
   **New file: `public/hq-ground.js` (about 13 MB).** It carries the 2K ground, laterite, sand and asphalt materials and the two HDRI skies. It sits next to
   `public/index.html` and the game fetches it after it starts, so the game opens as fast as before and the better ground and sky fade in a few seconds later.
@@ -225,7 +247,7 @@ a player presses **Join voice chat**.
   **Trees.** The palms on the beaches, in the villages and in the Ganpatipule forest are your two coconut models (an upright one and
   a leaning one, tinted so each tree is different). The hill and grove trees are your two broadleaf tree models and the large shade tree. The
   dense stretch along the Ganpatipule temple road is a mix of coconut palms and the other trees.
-  **Things to know.** The leaning coconut palm is CC BY-SA and the tank wagon is under the Sketchfab "Standard" licence; both are
+  **Things to know.** The tank wagon is under the Sketchfab "Standard" licence; both are
   explained in `CREDITS.md`. The tiles-shop model you sent is not used (its signs name a real Australian company). The game page grew by about
   5 MB because of the new models (it is now about 16.6 MB; GitHub's web upload accepts files up to 25 MB).
 - **1.8.0: Android and iPhone.** The game now plays in a phone browser, with on-screen controls and a garage built for a touch
