@@ -32,7 +32,7 @@ Browsers allow the microphone on `https://` pages and on `localhost`, so this wo
    and the backend. No separate static site, no CORS settings, and no environment
    variables are needed.
 4. **Play.** Open the address, press **Create a room**, then **Copy invite** and send it to
-   your friends. In the garage (Esc), press **Join voice chat** and allow the microphone.
+   your friends. In the menu (Esc), open the **Online** page, press **Join voice chat** and allow the microphone.
    Render addresses are `https`, so the microphone works.
 
 Free plan notes:
@@ -49,16 +49,16 @@ Free plan notes:
 
 ## Playing on a phone or tablet
 
-Open the same address in **Chrome on Android** or **Safari on iPhone / iPad**. The garage and the controls change to fit
+Open the same address in **Chrome on Android** or **Safari on iPhone / iPad**. The menu and the controls change to fit
 a touch screen by themselves. Landscape (phone turned sideways) is the best way to play; in portrait the game works too and
 shows a small "turn your phone sideways" note you can close.
 
-- **Left thumb: steering.** Two arrows; slide your thumb from one to the other without lifting it. In the garage (menu
-  button, top right) the *Touch controls* section also offers a **Slider** (a knob you drag, with finer steering) and **Tilt**
+- **Left thumb: steering.** Two arrows; slide your thumb from one to the other without lifting it. In the menu (menu
+  button, top right) the *Controls* page also offers a **Slider** (a knob you drag, with finer steering) and **Tilt**
   (turn the phone like a steering wheel; tap the on-screen wheel to centre it, and use *Reverse tilt* if it turns the wrong way).
 - **Right thumb: gas and brake.** The brake also reverses. **HAND** is the handbrake and **HORN** is the horn.
 - **Top row:** camera, **back to the road** (hold it for half a second, so a stray tap cannot throw you across the map),
-  **More** and the garage menu. **More** holds lights, time of day, weather, gearbox, graphics, sound, engine on/off, the
+  **More** and the menu. **More** holds lights, time of day, weather, gearbox, graphics, sound, engine on/off, the
   drivers list, HUD on/off, car colour, spare fuel and voice range. The microphone button shows up while you are in voice chat.
 - **Drag anywhere else on the view** to look around. When you stop near a pump, a **Hold to refuel** button appears.
 - With the **Manual** gearbox, **UP / DOWN** shift buttons appear above the steering arrows.
@@ -78,14 +78,14 @@ shows a small "turn your phone sideways" note you can close.
 
 ## Voice chat
 
-- Press **Join voice chat** in the garage (Esc) while you are in a room. The browser asks for
+- Press **Join voice chat** on the menu's **Online** page (Esc) while you are in a room. The browser asks for
   the microphone. Audio goes directly between browsers; the server only helps them find
   each other.
 - **K** turns your mic on or off. **B** switches the range between *Everyone* (the default: every
   driver in the room is heard at full volume wherever they are) and *Nearby* (voices fade out
   with distance, full volume inside about 120 m and silent beyond about 900 m, like being on the road together).
 - **Clear voice while driving.** Voice and the game share one audio engine but have their own volume
-  sliders in the garage (**Game** 0 to 150 percent, **Voice** 0 to 200 percent). The game volume dips by about half
+  sliders (**Game** 0 to 150 percent on the *Audio* page, **Voice** 0 to 200 percent on the *Online* page). The game volume dips by about half
   while a friend talks (and a little while you talk), so voices stay clear over the engines. Voice has its own
   limiter, so a loud friend does not distort.
 - **Headphones or speakers.** Under *Voice chat* there is a button **Mic: speakers (echo cancel)** /
@@ -93,7 +93,7 @@ shows a small "turn your phone sideways" note you can close.
   hear the game through your mic. With headphones it is off, which gives the clearest voice (the canceller can
   otherwise chop your voice while the engine sound plays). The page switches to headphones by itself when the
   browser reports a headset or earbuds, and remembers your choice.
-- **Choosing the microphone, Bluetooth headsets and Listen only.** Under *Voice chat* in the garage there is a
+- **Choosing the microphone, Bluetooth headsets and Listen only.** Under *Voice chat* on the *Online* page there is a
   **Microphone** list: *Automatic (recommended)*, every microphone the browser can see, and *Listen only (no
   microphone)*. A Bluetooth headset has two modes: stereo (music quality) and a "Hands-Free" phone mode that is mono
   and narrow, like a phone call. Windows switches the headset into phone mode the moment any program opens its
@@ -111,7 +111,7 @@ shows a small "turn your phone sideways" note you can close.
 
 ### Host controls
 
-The room creator is the host (shown as "host"). In the garage (Esc) the host sees a **Mute**
+The room creator is the host (shown as "host"). On the *Online* page (Esc) the host sees a **Mute**
 button next to each driver and a **Mute everyone else** button. A muted driver cannot
 turn their mic back on, and everyone else's game also silences them, so it still holds if
 their browser tries to ignore it. New drivers who join while "mute everyone" is on start
@@ -160,6 +160,72 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **1.12.0: every plant and rock is a real scan now, and the ground is covered in them** (Epic gets the full set; Ultra a lighter one; phones a thinner one).
+  **New file: `public/hq-veg.js` (about 7 MB).** It carries the plants and rocks (geometry and texture atlases). It sits next to `public/index.html` and
+  `public/hq-ground.js`; the game fetches it after it starts. **Upload the whole `public` folder to GitHub, including `hq-veg.js`** (every file is under GitHub's
+  25 MB browser-upload limit). Without it the game still runs, with no ground cover, bushes or boulders.
+  **Removed.** All the plants, rocks and coconut palms I had made from code are gone: the grass tufts, shrubs, flower bushes, the old box-and-leaf palms and the
+  two palm models from 1.10.0 (so the CC BY-SA leaning palm is no longer in the game). Every coconut palm is the realistic one now. The towns' trees (Hatkhamba,
+  the station, Station Road) use the downloaded palms and trees too.
+  **Ground cover (Epic, Ultra, phones).** Grass, weeds, ferns, nettle, periwinkle, celandine, dandelions, small shrubs, sorrel, moss and pebbles from Poly Haven, as
+  real 3D plants (not flat cards), grouped into clumps and spread over every patch of grass and laterite around you, thicker beside the road, wetter patches
+  get ferns and moss, dry headland patches turn straw-coloured. Nothing is stored for the whole map: the clumps are generated around the camera as you drive
+  (64 m cells, always the same for the same place) and drawn with three detail levels, so memory and draw calls stay small. Plants sway in the wind, let sun
+  through their leaves and sink into the ground at the far edge instead of popping out.
+  **Bushes, boulders and rocks (all modes).** Cashew scrub and hedges are Poly Haven shrubs with a skirt of small plants round them. Boulders sit along the verges and on the
+  rocky shores, rock faces are set into steep banks beside the road, reef slabs lie off the rocky beaches, and the sea stacks and Bhagwati fort cliffs are tall
+  boulders. All of them are tinted red-brown like the laterite coast.
+  **Optimisation.** Instancing everywhere; one draw call per plant type and detail level for the ground cover (about 15 in all); plants and rocks share two texture
+  atlases (decoded at 2048 on Epic, 1024 on Ultra, 512 on Normal; phones the same as the mode). Epic draws about 3 million ground-cover triangles in view on a PC
+  (a third to half of that on a phone); the ranges are in `src/vegfield.js` (`QS`) if the frame rate is too low: lower `dens` or the `R` radii.
+  **What is not there.** No new broadleaf tree model was supplied, so the hill and grove trees are the same three as before (treea, treeb, banyan), and the flowering trees
+  along Station Road now use them too. Epic needs the graphics card set to the RTX 3050 (not the integrated one).
+  **Colour.** Coconut palms, trees, bushes and the grass are tinted a deeper green (the palm texture is yellow-green, which read as parrot green); only the dry patches stay straw.
+  Credits: Poly Haven plants and rocks are CC0 (listed in `CREDITS.md` and in the menu).
+- **1.11.0: real scanned ground, road and sky, new realistic trees, and trees everywhere** (Ultra and Epic get the full set; Normal gets the lighter version).
+  **New file: `public/hq-ground.js` (about 13 MB).** It carries the 2K ground, laterite, sand and asphalt materials and the two HDRI skies. It sits next to
+  `public/index.html` and the game fetches it after it starts, so the game opens as fast as before and the better ground and sky fade in a few seconds later.
+  **Upload the whole folder to GitHub, including `hq-ground.js`** (each file is under GitHub's 25 MB browser-upload limit: `index.html` is about 21 MB). If that
+  file is missing the game still runs and looks like 1.10.0 on the ground and sky.
+  **Ground and roads.** Photo-scanned materials with real normal maps and roughness: gravel and grass-path ground, red laterite on the verges and slopes, coast sand
+  on the beaches and dunes, and two asphalt materials (fresh and worn, mixed in patches). Each tile is blended with a rotated copy of itself so the repeat does not
+  show. They sit on top of the existing colours, so the world keeps its look: dry headlands stay straw-coloured, the forest floor stays dark.
+  **Sky (Ultra and Epic).** Two real HDRI skies: clear blue for morning and noon, a cloudy sunset for golden hour and dusk. They are turned and stretched so the sun sits
+  where the game's sun is, fade into the old horizon colour so the fog still matches, and light the scene (reflections and ambient light). Rain, overcast
+  and night still use the painted sky.
+  **Trees.** Three new models: a realistic coconut palm (half of all palms), banana plants (village yards and plantation patches) and pines / casuarina (beach
+  backshore and high ground). Palms, broadleaf trees and shrubs are denser, and every road now has trees along both verges.
+  **Optimisation.** Everything uses instancing with three detail levels; the new trees have lean far versions (a pine is 4,000 / 875 / 179 triangles near to far), the
+  big textures are decoded at the size the graphics mode needs (Normal 512, Ultra 1024, Epic 2048 for colour; normal maps 512 / 1024 on Ultra / Epic and none on Normal),
+  and the ground shader skips the detail work beyond 800 to 1,400 m. Expect about a third more vegetation triangles than 1.10.0 at the busiest spots.
+  This is a big step up in realism, but it is still a browser game: it is not GTA 6 (no ray-traced lighting, no photo-scanned buildings or cars).
+  Credits for the new models, textures and skies are in `CREDITS.md` and in the menu (*Info* page): Palm Tree Realistic (00amza), Banana tree (Alnazir), Pine Tree
+  (BazukaliKartal) are CC BY 4.0; the Poly Haven textures and skies are CC0.
+- **1.10.0: a tabbed menu, a closer camera, new bikes, the rider, your bus and ground textures** (Normal, Ultra and Epic alike).
+  Credits and licences for every new model are in `CREDITS.md` and in the menu (*Info* page).
+  **Menu.** The garage is now a pause menu in the style of GTA 5: a black tab bar (the open page is a white block) with seven pages,
+  *Play* (name, your ride, weather, graphics mode), *Vehicle* (eleven vehicles, stats, colours, gearbox), *Online* (create a room, join with a
+  code, voice chat), *Graphics*, *Audio*, *Controls* (the key map, or the touch options on a phone) and *Info* (credits). The *Start driving* /
+  *Resume driving* button sits in a bar at the bottom of every page. On a desktop Q and E switch pages, the left and right arrows pick a vehicle on the
+  Vehicle page and Enter starts; on a phone the tab bar scrolls sideways and the menu keeps its landscape and portrait layouts.
+  **Camera.** The chase camera sits closer and lower, like the GTA 6 view you sent: a tighter lens, the car low in the frame and the horizon
+  mid-screen. It no longer drifts back and up at speed (at 200 km/h it sits less than a metre further back than at a standstill).
+  **Ground.** The grass is the "Realtime Grass" texture and the dirt is the "Soft Dirt" texture you sent, blended by the same terrain
+  rules as before (grass on the green land, dirt on tracks, cuttings and the ghat hillsides).
+  **Vehicles.** The cars, the bus and the bikes on the road are now our own models, the same ones you can drive (the old boxy stand-ins are gone,
+  also for the parked cars, buses and bikes in the villages and at the station; the autos and tempos stay as they were, there was no model for them). The city bus is your "Indian Bus 1", recoloured red and black. New bike: the
+  **Honda CB 750 F Super Sport 1970** ("Chiplun Classic 750", a four-cylinder with its own sound, drivable and also riding in the traffic).
+  **Hapus Triple** is now your **2013 Triumph Street Triple 675** (drive only, not in the traffic; it keeps the paint of the scan). Drivers
+  and riders are your **rider.glb**, posed for each seat: in every car you drive, on both bikes, and on the Honda in the traffic.
+  **Suspension.** Every moving vehicle (the traffic cars, bus and bikes, ours and other players') follows the slope of the road under
+  its axles, so none of them dips its nose into a crest or a rise.
+  **Graphics modes.** Normal is the standard look and the lightest. Ultra is the highest quality that stays optimised: HDR lighting, ambient occlusion, bloom, sun
+  shafts, sharper vehicle textures (8x filtering) and adaptive sharpening. Epic is everything at its highest: Ultra plus the cinematic layer, upscaled and sharpened vehicle textures
+  with 16x filtering, vehicles in full detail 1.6 times further away, wider shadows and the strongest sharpening. Ultra and Epic still ease down by themselves
+  if the frame rate suffers.
+  **Rooms.** The server now accepts the eleventh vehicle (the Honda) in rooms. Replace `server.js` together with `public/index.html` when you update.
+  **Things to know.** The Triumph scan has its paint baked into the photo texture, so the colour swatches are hidden for it. The three new bike / rider / bus
+  models are CC BY 4.0. The game page is about 20 MB now (GitHub's web upload accepts files up to 25 MB).
 - **1.9.0: your houses, trains, track and trees are in the game** (Normal, Ultra and Epic alike).
   Credits and licences for every new model are in `CREDITS.md` and in the garage (*Credits and licences*).
   **Houses.** All the plain box houses along the coast road, in the hamlets and in the Ganpatipule beach village are gone: every house
@@ -181,7 +247,7 @@ a player presses **Join voice chat**.
   **Trees.** The palms on the beaches, in the villages and in the Ganpatipule forest are your two coconut models (an upright one and
   a leaning one, tinted so each tree is different). The hill and grove trees are your two broadleaf tree models and the large shade tree. The
   dense stretch along the Ganpatipule temple road is a mix of coconut palms and the other trees.
-  **Things to know.** The leaning coconut palm is CC BY-SA and the tank wagon is under the Sketchfab "Standard" licence; both are
+  **Things to know.** The tank wagon is under the Sketchfab "Standard" licence; both are
   explained in `CREDITS.md`. The tiles-shop model you sent is not used (its signs name a real Australian company). The game page grew by about
   5 MB because of the new models (it is now about 16.6 MB; GitHub's web upload accepts files up to 25 MB).
 - **1.8.0: Android and iPhone.** The game now plays in a phone browser, with on-screen controls and a garage built for a touch
