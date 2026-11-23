@@ -69,7 +69,8 @@ shows a small "turn your phone sideways" note you can close.
 - **Performance.** Phones start with a lighter setup: a lower render resolution, smaller shadows, shorter draw distance for
   scenery, no fog banks, lighter rain, fewer other cars on the road, and the frame rate held at 60 on 90 / 120 Hz screens. The game
   also lowers its resolution by itself if the frame rate drops. **Normal** graphics is the one to use on a phone. Ultra and Epic
-  can still be chosen but will be slow on most phones. The page is about 11 MB, so the first load on mobile data takes a moment
+  can still be chosen but will be slow on most phones. **Insane** (a fourth button on phones only) draws Epic at the screen's full resolution: the sharpest
+  picture and by far the heaviest, meant for a flagship phone; its Resolution slider lowers the load if it stutters. The page is about 22 MB, so the first load on mobile data takes a moment
   (the server sends it compressed, and the browser keeps it afterwards).
 - **Sleep and signal.** The screen is kept awake while you drive. If the phone sleeps or the signal drops, the room connection
   is rebuilt when you come back.
@@ -160,6 +161,83 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **1.16.0: your Poly Haven scans and Sketchfab houses are in: three new village houses, clay-tile roofs and plaster walls on the existing houses, lawns and gardens around homes, new meadow grass and broadleaf plants, sea stacks, roadside rock outcrops and rock platforms on the shore** (Ultra, Epic and Insane get the full set; Normal gets the houses and roofs with colour only, and keeps its lighter ground cover).
+  **Files.** Upload the whole `public` folder **and `server.js`** (inside `aareware-server`, next to `package.json` and `render.yaml`), commit, and Render redeploys. What changed: `public/index.html` (about 23.5 MB), `public/hq-veg.js` (about 12.8 MB, the new plants and rocks), **a new `public/hq-houses.js` (about 3.6 MB: the three houses and the tile and plaster pictures)** and `server.js` (it has to serve the new file; without it the new houses do not load).
+  `hq-ground.js` and `hq-trucks.js` are byte for byte the 1.15.0 files. Every file is under GitHub's 25 MB browser-upload limit. If `hq-houses.js` is missing or fails to load, the game still runs: the three new houses are swapped for existing house types.
+  **Three new houses (CC BY 4.0).** A Goan house with a hipped clay-tile roof and columns ("Traditional House Designing" by ALEXMOt), an unfinished red-brick house ("Under Construction Indian House" by nayan pachori) and a modern two-storey town house with a flat roof and terrace ("house by sawan" by Sawanmithapara878).
+  They were rebuilt for the game like the other houses: the walls repaint (the same paint colours as the rest of the village), the windows glow at night, there are three detail levels, and Ultra, Epic and Insane add the normal maps. About 40 of them stand in the villages.
+  **Clay-tile roofs.** Poly Haven roof tiles (clay_roof_tiles, clay_roof_tiles_03, roof_tiles; CC0) are laid over the roofs of the existing houses by the house shader, in place of the flat tin, for variety: every cottage "n1" and "n2" gets them, about 55 percent of the "n3" houses and 60 to 70 percent of the stilt houses, so a village shows red tile, dark tile and rusty tin side by side.
+  Each house gets its own tint and brightness, and the tiles show relief in Ultra, Epic and Insane (colour only in Normal).
+  **Plaster walls.** Poly Haven plasters (red_plaster_weathered, blue_plaster_weathered, worn_mossy_plasterwall, white_stucco, plaster_stone_wall_01; CC0) give the painted town houses and the new modern house a fine plaster grain, stains and relief under your paint colour, in place of the plain painted pattern. Close up only: the two nearest detail levels.
+  **Grass, lawns and garden plants.** `grass_medium_01` adds new tufts to every meadow, `grass_bermuda_01` is a short lawn grass, and `anthurium_botany_01` is a broadleaf garden plant. Around houses the ground cover now turns into a yard (lawn with sorrel and dandelions, or a "tropical" mix with the broadleaf plants and ferns), so homes sit in gardens instead of wild meadow; the plants also grow in damp hollows.
+  **Rocks.** `coast_rocks_02` adds sea stacks and reefs along the shore; `coast_land_rocks_03` adds weathered laterite outcrops (about 80) beside the roads and along the shore, which you cannot drive through; `coastal_cliff_04` is used as about 40 low rock platforms at the waterline, front to the sea.
+  A first try that stood the cliff scan against the headland slopes looked wrong (it is a flat-topped block, not a cliff face, and it hung in the air), so it is used as shore platforms instead.
+  **Credits.** The game's credits panel and `CREDITS.md` list the three houses and every new scan.
+  **Limits.** Not measured on a real phone or a real graphics card: it was checked in a software-rendered browser (pictures of the houses, roofs, plaster, plants, rocks and the missing-pack fallback), so the real frame rate is not known.
+  The rock picture is bigger now (2048 x 5632 at full size; Insane on a phone uses 1536 wide, 4224 tall), so a phone whose graphics limit is 4096 pixels could not load it at Insane; Epic and below use smaller sizes.
+  Three of your houses are not used yet: `indian_house_old` has its lighting baked into the textures, `old_house` is a 68 MB model, and `indian_house_model` has a ground slab under it; each needs its own clean-up.
+
+- **1.15.0: "Insane", a fourth graphics level for phones that draws at your screen's full resolution** (computers keep Normal, Ultra and Epic; Epic itself is unchanged).
+  **Files.** Only `public/index.html` changed (about 22 MB). `hq-ground.js`, `hq-veg.js` and `hq-trucks.js` are byte for byte the 1.14.0 files, so you can upload just `index.html`, or the whole `public` folder as before; Render redeploys.
+  **Why Epic looked blurry on a phone.** Ultra and Epic drew phones at 1.25 pixels per screen point to keep them cool and smooth. On a Galaxy S25 Ultra (about 412 x 915 points at 3.5 pixels each, so 1442 x 3203 real pixels) that is about
+  0.6 million pixels out of 4.6, stretched roughly 2.8 times in each direction, which is what softens the textures and gives the leaves their staircase edges. The plant, rock and sky pictures were also kept smaller on phones (plants 1024 instead of 2048, rocks 1024 instead of 1536, the sky 1536 instead of 2048).
+  **Insane.** Settings, Graphics: a fourth button, shown on phones only (the Graphics button in the More tray cycles Normal, Ultra, Epic, Insane). It is Epic's top setting drawn at the screen's own resolution, with the plant, rock and sky pictures at the sizes Epic uses on a computer,
+  16x texture filtering and one more level of glow (bloom) so the glow keeps its size. Under the buttons a **Resolution** slider (50 to 100 percent, 100 is the full screen, saved between visits) says how many pixels are drawn, for example 1442 x 3203 (4.6 million) at 100 percent.
+  **It is heavy.** Insane needs much more graphics memory and power than Epic: expect a warm phone and a faster battery drain, and a frame rate that can drop below 60. Unlike Epic it never eases itself down; if it stutters, lower Resolution (70 to 80 percent is a good first try) or pick Epic.
+  After 45 ms frames it shows one hint saying so. The ground textures are already at their largest in Epic, so there Insane adds only the finer sampling.
+  **Safety nets.** If the page closes before Insane has drawn 30 frames over 20 seconds, the next visit starts in Epic and says why. If the browser drops the graphics context while you play Insane, the page restarts in Epic.
+  **Not measured on a real phone.** It was tested on a software-rendered emulation of a 412 x 915 screen at 3.5 pixels per point: the levels, sizes and switching work and the pictures are clearly sharper than Epic's, but the real frame rate on a Galaxy S25 Ultra is not known.
+  **Fix.** Switching between Epic and Insane re-decodes the sky pictures; the old ones were released before the environment lighting was rebuilt from them, so it was built from blank pictures (and the browser printed graphics warnings). The sky now moves to the new pictures first.
+
+- **1.14.0: the Kawasaki Ninja H2, a golden-hour sky and sea, drooping coconut palms, a forest floor of dry leaves with fallen branches, a calmer dirt, a draw-distance setting, and no code-built vehicles left** (Ultra and Epic get the new ground; Normal and phones keep the lighter scene).
+  **Files.** The same four files as 1.13.0; upload the whole `public` folder again (inside `aareware-server`, next to `server.js`, `package.json` and `render.yaml`) and commit; Render redeploys.
+  `index.html` is about 22 MB, `hq-ground.js` about 19 MB (it carries the three new ground sets), `hq-veg.js` about 8 MB (the branches and the sand patch) and `hq-trucks.js` about 3.3 MB:
+  every file is still under GitHub's 25 MB browser-upload limit. If a pack file is missing the game still runs without that part, as before.
+  **New bike.** The Street Triple is replaced by your **Kawasaki Ninja H2** ("Malvan Supercharged", model "Kawasaki Ninja H2 [free]" by Anshuman Dutta, CC BY 4.0): drivable and also riding in the traffic.
+  The download was a ripped scene with 35 loose meshes and no textures, so it was rebuilt for the game: moved onto the ground, split into body, front fork (which steers), wheels and a lighter level,
+  with its 22 flat colours folded into nine materials. The fairings are the paintable part in the garage (it starts in Midnight); the glossy panels have their reflection of the sky toned down so they do not turn silver at noon.
+  **Handlebar fix.** At low speed the fork and bars turned the wrong way (A turned the bike left but the bars right). They now follow the steering on every bike.
+  **Camera.** The bike chase camera sits further back (the cars and the rest keep theirs).
+  **Detail distance.** Settings, Graphics: a new slider, 50 to 300 percent, stretches how far the high-detail models are drawn (trees, houses, vehicles); the draw distance itself does not change, and the grass keeps its own range.
+  The line under the slider shows the distances in metres. It costs frame time: in Epic, doubling it adds roughly a third more triangles on the road and tripling it about two thirds more (measured on the test machine, not on a phone).
+  **Old vehicles gone.** Every vehicle is now one of the supplied models; the code-built stand-ins are removed.
+  **Forest floor (Ultra and Epic).** Three more Poly Haven scans (CC0): leaf litter, wet mud with leaves and a second coast sand. Under the groves and the Ganpatipule hill forest the ground is now dry leaf litter,
+  patches of mud break up the bare soil, and the beaches carry a second, pebblier sand. The grass thins out under the trees so the litter shows between the clumps, and the baked ground colour under the woods is browner to match from far away.
+  **Fallen branches and pebbly sand.** Two more scans: dry branches (piles of two or three under the broadleaf trees, banyans and pines, along the verges, and driftwood on the beaches, lying along the contour so they rest level)
+  and patches of pebbly sand (on the beaches and beside the roads), 3 D models you can see standing out of the ground. They are Ultra and Epic only.
+  **Calmer dirt.** The laterite is a browner colour (it was a brick red that glowed orange at golden hour), and the mud patches break it up further.
+  **Golden hour.** The drifting clouds now also show over the four photographed skies (before, those skies hid them), and around sunset there are more of them: the sides facing the sun glow orange and the shadowed undersides go violet.
+  In Ultra and Epic the sea mirrors this: the sunset band glows in the water, the clouds are reflected in orange, the turquoise turns a darker teal-green in the low light and the foam warms up.
+  **Coconut palms.** The fronds of the realistic palms now arch over and hang like a coconut's (the old fronds low in the crown hang more than the young ones on top), and every palm bends its trunk and curves its crown a little differently.
+
+- **1.13.0: your trucks, four real skies, soil instead of the white pads, brown trunks, rock cliffs, soft grass, and traffic that drives like traffic** (Epic and Ultra get the full set; Normal and phones the lighter version).
+  **New file: `public/hq-trucks.js` (about 3.3 MB).** It carries the two truck models. It sits next to `public/index.html`, `public/hq-ground.js` and `public/hq-veg.js`; the game
+  fetches it after it starts. **Upload the whole `public` folder to GitHub, including `hq-trucks.js`,** inside the `aareware-server` folder together with the server files
+  (`server.js`, `package.json`, `render.yaml`), then commit; Render redeploys. `hq-ground.js` grew to about 15 MB (four skies and the cliff surfaces), `index.html` is about 22 MB and
+  `hq-veg.js` about 7 MB: every file is still under GitHub's 25 MB browser-upload limit. If a pack file is missing the game still runs: no `hq-trucks.js` means no trucks yet (traffic
+  slots stay empty and parked trucks appear when it arrives); no `hq-ground.js` means the plain ground and the painted sky; no `hq-veg.js` means no ground cover or boulders.
+  **Trucks.** The Renault Premium box truck and the KrAZ-250 cement carrier (both from the files you added) replace the old code-built trucks in the traffic and in the parking lots.
+  Real wheels that turn (twin rear tyres are one unit), working head and tail lamps, collision circles along the body, and three detail levels (the far one is a few hundred triangles).
+  **Rickshaws removed.** The auto-rickshaws are gone from the traffic, the parking lots and the code.
+  **Traffic that drives like traffic.** Every car, bus, truck and bike now steers with a bicycle model: the heading changes only through the steering angle, so turns are smooth arcs
+  instead of the body snapping round. The front wheels show the steering, all wheels roll at the true speed, the body pitches under braking and leans in bends, each vehicle
+  follows its lane with pure-pursuit steering and keeps its distance with a braking model (heavier vehicles accelerate and turn more slowly).
+  **Skies.** Four Poly Haven "Pure Sky" pictures replace the two from 1.11.0: Qwantani Sunset for sunrise, golden hour and dusk, Scythian Tombs (thin cirrus) for morning and late
+  afternoon, Pizzo Pernice (clear deep blue) for midday, and Snow Field 2 (heavy grey cloud) for overcast and rain. Each is turned so its sun sits where the game's sun is, and its
+  brightness is matched to the time of day. They also light the scene. Night still uses the painted sky.
+  **No more white pads.** The pale round patches at the petrol pumps, the beach stops, the top of Amba Ghat and the fort are now soil (the ground's own dirt texture).
+  **Trees.** Trunks and branches are brown and only the leaves are green (the whole tree used to be tinted green). The cartoon broadleaf trees are gone: four realistic broadleaf trees
+  (two from each pack you added) stand in the forests, along the roads and inside the fort. They have three detail levels (about 4,500 / 1,200 / 200 triangles) and a small leaf atlas; the
+  detail level is chosen per 64 m cell around you, so full-detail trees are drawn only in a tight ring near the car.
+  **Rock cliffs.** Steep ground (the sea cliffs under the Bhagwati fort, the ghat walls, rocky banks) is now shaded with real rock surfaces (cliff side, cracked boulder, mossy rock, coast
+  rocks) in red-brown laterite tones, instead of a flat colour. Epic uses 1024 colour and 512 normal maps, Ultra 512 colour, Normal keeps the old look.
+  **Soft grass.** The hills and the road verges carry softer, fuller grass in a pale-to-golden green, the Forza Horizon look you asked for.
+  **Optimisation.** In the thickest forest at Ganpatipule a phone view (Ultra) is about 5.2 million triangles including shadows, desktop Epic about 6.5 million. (The first version of the new
+  trees had put the phone view at 12 million; 1.12.0 was 4.4 million.) If a phone is slow, the game already thins out distant plants on its own; `src/scatter.js` (`ch`, the tree ranges)
+  and `assettools/prep_trees3.mjs` (`LEAF_TRIS`, `BARK_TRIS`) are the knobs.
+  **What is not there.** The two coastal_cliff meshes you added are not placed in the world yet (the cliff surfaces use the rock textures only); Epic still needs the graphics card
+  set to the RTX 3050 (not the integrated one). I could only test with a software renderer here, so real frame rates on your phone and laptop are unmeasured.
+  Credits: the trucks (Max, Randonavt) and the trees (Nicholas-3D) are CC BY 4.0, the skies and rock surfaces are Poly Haven CC0 (see `CREDITS.md` and the menu's *Info* page).
 - **1.12.0: every plant and rock is a real scan now, and the ground is covered in them** (Epic gets the full set; Ultra a lighter one; phones a thinner one).
   **New file: `public/hq-veg.js` (about 7 MB).** It carries the plants and rocks (geometry and texture atlases). It sits next to `public/index.html` and
   `public/hq-ground.js`; the game fetches it after it starts. **Upload the whole `public` folder to GitHub, including `hq-veg.js`** (every file is under GitHub's
