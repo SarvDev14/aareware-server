@@ -162,6 +162,11 @@ a player presses **Join voice chat**.
 
 ## What is new in this version
 
+- **1.28.0: the Ratnagiri Rocket has the sound of your Kawasaki Z750 recording, and E starts the engine.** The engine is cut from your recording: the starter and the catch, the idle (about 1,200 rpm), and loops from 1,200 to 12,500 rpm
+  taken from the clean pull in the recording (it had no steady plateaus except the idle, so the pitch was tracked through the pull and each loop was made constant-pitch, with the engine's own pulse, rasp and noise kept).
+  Closed-throttle (engine braking) loops are the same loops duller and quieter. The gear sounds are engineered: a mechanical clunk on every shift (louder than in 1.26), a quickshifter cut and
+  "brap" on a held-throttle upshift, and the rev blip with 1 to 3 exhaust pops on a downshift. **E** now starts the engine when it is off (with it running, E still shifts up); I and the on-screen
+  engine button work as before. The old SC-Project-style treatment of the CBR sound is gone with it, because your recording already has the rasp.
 - **1.27.0: a dense Hatkhamba, lane paint that shows at any distance, a Neutral gear for the bikes, and raindrops on the screen.** Hatkhamba Thita is now a busy highway-junction town: rows of
   shops and houses (the model houses of the rest of the map) shoulder to shoulder along both sides of all three arms, a second and third row behind them, more houses in the gaps between
   the arms, and about 800 more trees (mango, rain tree, palm, bamboo, bushes). Hotel Alankar and its forecourt are left exactly as they were. The dashed lane lines and white edge lines of

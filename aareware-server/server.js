@@ -51,7 +51,7 @@ setTimeout(() => zlib.gzip(page, { level: 6 }, (err, buf) => { if (!err) pageGz 
 // hq-trucks.js (the Renault and KrAZ trucks, ~3.5 MB), hq-houses.js (the Konkan house models and the clay-tile / plaster surface textures, ~3.5 MB) and hq-hat.js (the Hatkhamba props: poles, lamps, barriers, cones, boxes, shutters, fence and the road-paint / concrete pictures, ~6 MB).
 // All are optional: without them the game keeps its plainer ground and sky, has no ground cover or bushes / boulders, no trucks, and only the older house models. The page asks for them once the game is running.
 // Same treatment as the page: gzip in the background, ETag so a returning visitor gets "304 not modified".
-const PACK_FILES = ['hq-ground.js', 'hq-veg.js', 'hq-trucks.js', 'hq-houses.js', 'hq-hat.js', 'hq-zx6r.js', 'hq-cbr.js'];
+const PACK_FILES = ['hq-ground.js', 'hq-veg.js', 'hq-trucks.js', 'hq-houses.js', 'hq-hat.js', 'hq-zx6r.js', 'hq-z750.js'];
 const packs = {};
 for (const name of PACK_FILES) {
   try {
